@@ -277,6 +277,13 @@ employeeList.Add(employee6);
 //where - all objects
 List<Employee> femaleEmployees = employeeList.Where(emp => emp.Gender == "F").ToList();
 
+//LINQ - Language integrated query
+
+List<Employee> femaleEmployees1 = (from emp in employeeList
+                                   where emp.Gender == "F"
+                                   select emp).ToList();
+
+
 //select
 List<string> names = new List<string>();
 foreach (var item in employeeList)
@@ -286,14 +293,24 @@ foreach (var item in employeeList)
 
 names = employeeList.Select(emp => emp.FullName).ToList();
 
+//linq
+List<string> names1 = (from emp in employeeList
+                       select emp.FullName).ToList();
+
 
 //first - 1st female employee = throw exception if no matching records
 Employee firstFemale = employeeList.First(emp => emp.Gender == "F");
 
-List<Employee> femaleEmployees1 = employeeList.Where(emp => emp.Gender == "F").ToList();
-Employee firstFemale1 = femaleEmployees1[0];
+List<Employee> femaleEmployees11 = employeeList.Where(emp => emp.Gender == "F").ToList();
+Employee firstFemale1 = femaleEmployees11[0];
+
+//linq
+Employee femaleEmployees2 = (from emp in employeeList
+                                   where emp.Gender == "F"
+                                   select emp).First();
 
 //second, third etc.,
+//group, joins
 
 //firstordefault => return null if not matching
 Employee firstFemale2 = employeeList.FirstOrDefault(emp => emp.Gender == "F");
@@ -302,12 +319,25 @@ Employee firstFemale2 = employeeList.FirstOrDefault(emp => emp.Gender == "F");
 List<Employee> orderedList = employeeList.OrderBy(emp => emp.FullName).ToList(); //ascending
 List<Employee> orderedList1 = employeeList.OrderByDescending(emp => emp.FullName).ToList();
 
+//linq
+List<Employee> orderedList2 = (from emp in employeeList
+                               orderby emp.FullName
+                               select emp).ToList();
+
 //order by descending using full name and then retrive only the full name, not entire object
 List<string> namesList = employeeList.OrderByDescending(emp => emp.FullName).Select(emp => emp.FullName).ToList();
 
+List<Employee> orderedList4 = (from emp in employeeList
+                               orderby emp.FullName descending
+                               select emp).ToList();
 
 //any - true if one object satisfy the condition
 bool hasFemaleEmployee = employeeList.Any(emp => emp.Gender == "F");
+
+//linq
+bool hasFemaleEmployee2 = (from emp in employeeList
+                           where emp.Gender == "F"
+                           select emp).Any();
 
 //all - true only if all objects satisfy the condition
 bool isAllFemale = employeeList.All(emp => emp.Gender == "F");
@@ -325,7 +355,35 @@ double averageSalary = employeeList.Average(emp => emp.Salary);
 //max, min
 
 
+//linq
+int maleEmployeesCount1 = (from emp in employeeList
+                           where emp.Gender == "M"
+                           select emp).Count();
+
+int totalMaleSalary1 = (from emp in employeeList
+                           where emp.Gender == "M"
+                           select emp).Sum(emp => emp.Salary);
+
 Console.WriteLine("end");
+
+//skip, take
+//alternate for sql pagination, but recommended for smaller projects
+//for large applications, handle pagination in SQL stored procedure
+var page1 = employeeList.Skip(0).Take(10);
+var page2 = employeeList.Skip(10).Take(10);
+var page3 = employeeList.Skip(20).Take(10);
+var page4 = employeeList.Skip(30).Take(10);
+
+int pageNumber = 2;
+int pageSize = 10;
+var pageRecords = employeeList.Skip(pageSize * (pageNumber - 1)).Take(pageSize);
+
+//linq
+var page2_1 = (from emp in employeeList
+               select emp).Skip(10).Take(10);
+
+var page2_2 = (from emp in employeeList
+               select emp).Skip(pageSize * (pageNumber - 1)).Take(pageSize);
 
 
 
