@@ -32,6 +32,8 @@ namespace ConsoleApp1
         //association - basic relationship
         public Department Department { get; set; }
 
+        public string ManagerId { get; set; }
+
         public int Salary { get; set; }
 
         

@@ -1,5 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using ConsoleApp1;
+using Microsoft.VisualBasic;
 
 Console.WriteLine("Hello, World!");
 
@@ -274,6 +275,8 @@ employeeList.Add(employee4);
 employeeList.Add(employee5);
 employeeList.Add(employee6);
 
+List<Manager> managerList = new List<Manager>();
+
 //where - all objects
 List<Employee> femaleEmployees = employeeList.Where(emp => emp.Gender == "F").ToList();
 
@@ -311,6 +314,24 @@ Employee femaleEmployees2 = (from emp in employeeList
 
 //second, third etc.,
 //group, joins
+
+Employee femaleEmployees3 = (from emp in employeeList
+                             where emp.Gender == "F"
+                             select emp).Skip(1).First();//Take(1)
+
+int m = 1;
+Employee femaleEmployees4 = (from emp in employeeList
+                             where emp.Gender == "F"
+                             select emp).Skip(m-1).FirstOrDefault();//Take(1)
+
+
+//performance issue in above code, executing for m times
+List<Employee> femaleEmployeesList = (from emp in employeeList
+                                where emp.Gender == "F"
+                                select emp).ToList();
+var nthFemaleRecord = femaleEmployeesList[m - 1];
+//SKIP => OFFSET in SQL. Take => Fetch => best approach
+
 
 //firstordefault => return null if not matching
 Employee firstFemale2 = employeeList.FirstOrDefault(emp => emp.Gender == "F");
@@ -384,6 +405,96 @@ var page2_1 = (from emp in employeeList
 
 var page2_2 = (from emp in employeeList
                select emp).Skip(pageSize * (pageNumber - 1)).Take(pageSize);
+
+
+//Group by
+
+var groupByDepartment = employeeList.GroupBy(emp => emp.Department.Name);
+
+
+foreach (var group in groupByDepartment)
+{
+    var groupKey = group.Key;
+    
+    foreach (var emp in group)
+    {
+        var firstName = emp.FirstName;
+    }
+}
+
+foreach (var group in groupByDepartment)
+{
+    var groupKey = group.Key;
+
+    foreach (var emp in group)
+    {
+        var lastName = emp.LastName;
+    }
+}
+
+//C# will create groups everytime you execute or refer the group, which will overload memory
+//ToLookUp
+
+var groupByDepartment4 = employeeList.ToLookup(emp => emp.Department.Name);
+
+foreach (var group in groupByDepartment4)
+{
+    var groupKey = group.Key;
+
+    foreach (var emp in group)
+    {
+        var firstName = emp.FirstName;
+    }
+}
+
+foreach (var group in groupByDepartment4)
+{
+    var groupKey = group.Key;
+
+    foreach (var emp in group)
+    {
+        var lastName = emp.LastName;
+    }
+}
+
+//linq
+var groupByDepartment1 = from emp in employeeList
+                         group emp by emp.Department.Name into empGroup
+                         select empGroup;
+
+
+var groupByDepartment2 = employeeList.GroupBy(emp => emp.Department.Name).Select(group => group.Count());
+
+
+//Group by
+
+// Employee objectName = new Employee() { FirsName = "" };
+//new { emp.Department.Name, emp.Gender } => Anonymous object
+
+object groupByAttributes = new { Name = "Vishnu", Id = 2 };
+
+var groupByDepartmentGender = employeeList.GroupBy(emp => new { emp.Department.Name, emp.Gender });
+
+
+//join
+var empWithManagers = employeeList.Join(managerList,
+                        emp => emp.ManagerId,
+                        mgr => mgr.ManagerID,
+                        (emp, mgr) => new
+                        {
+                            EmployeeName = emp.FullName,
+                            ManagerName = mgr.ManagerName
+                        });
+
+//linq
+var empWithManagers1 = from emp in employeeList
+                       join mgr in managerList on emp.ManagerId equals mgr.ManagerID
+                       select new
+                       {
+                           EmployeeName = emp.FullName,
+                           ManagerName = mgr.ManagerName
+                       };
+Console.ReadLine();
 
 
 
