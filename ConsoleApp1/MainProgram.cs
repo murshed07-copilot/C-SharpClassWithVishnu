@@ -3,6 +3,7 @@ using ConsoleApp1;
 using Microsoft.VisualBasic;
 using System.Collections;
 using System.Net.Http.Headers;
+using System.Runtime.CompilerServices;
 
 Console.WriteLine("Hello, World!");
 
@@ -496,7 +497,7 @@ var empWithManagers1 = from emp in employeeList
                            EmployeeName = emp.FullName,
                            ManagerName = mgr.ManagerName
                        };
-Console.ReadLine();
+//Console.ReadLine();
 
 
 //Array
@@ -510,6 +511,9 @@ myDict.Add("key2", "Sayful");
 
 string value1 = myDict["key1"];
 
+var key1 = "key1";
+var valuee = myDict[key1];
+
 foreach (var key in myDict.Keys) //.Values also available
 {
     string keyy = key;
@@ -519,7 +523,7 @@ foreach (var key in myDict.Keys) //.Values also available
 foreach(KeyValuePair<string, string> kvp in myDict)
 {
     string key = kvp.Key;
-    string value = kvp.Value;
+    string value7 = kvp.Value;
 }
 
 //Linq or Lambda will search record by record
@@ -541,8 +545,8 @@ myDict2.Add("1", "Vishnu");
 myDict2.Add("2", "Sayful");
 myDict2.Add(1, 1);
 
-string value = myDict["1"] as string;
-string value11 = (string)myDict["1"];
+//string value = myDict["1"] as string;
+//string value11 = (string)myDict["1"];
 
 //int value2 = (int) myDict["1"];
 
@@ -566,6 +570,98 @@ Employee emp1 = FindItem(employeeList, emp => emp.Id == "4"); //T is employee
 Employee emp2 = FindItem<Employee>(employeeList, emp => emp.Id == "4");
 
 Manager mgr1 = FindItem(managerList, mgr => mgr.Id == "5");
+
+Tuple<Employee, Manager, Department> myTuple = new Tuple<Employee, Manager, Department>(employee1, manager1, department1);
+var emp_1 = myTuple.Item1;
+var mgr_1 = myTuple.Item2;
+
+List<Tuple<Employee, Manager, Department>> listTuple = new List<Tuple<Employee, Manager, Department>>();
+listTuple.Add(myTuple);
+
+
+//File, Directory, Stream
+
+
+File.WriteAllText("mytestfile.txt", "this is the file content");
+
+string[] contents = new string[] { "Line 1", "Line 2" };
+//File.WriteAllLines("mytestfile.txt", contents); This will overwrite the previous contents of the file
+//append the content
+File.AppendAllLines("mytestfile.txt", contents);
+
+string[] fileContents = File.ReadAllLines("mytestfile.txt");
+string fileContent1 = fileContents[0];
+List<char> reversedContent = fileContent1.Reverse().ToList();
+
+//metadata
+FileInfo info = new FileInfo("mytestfile.txt");
+string fileName = info.Name;
+
+
+//Array reverse
+string name = "Md Sayful Marshed";
+string[] splitNames = name.Split(' ');
+Array.Reverse(splitNames);
+string reverseName = string.Join(" ", splitNames);//; .ToUpper();
+string uppercaseName = reverseName.ToUpper();
+
+
+//Stream - read line by line
+StreamReader reader = new StreamReader("mytestfile.txt");
+
+string line = reader.ReadLine();
+
+while(line != null)
+{
+    Console.WriteLine(line);
+    line = reader.ReadLine();
+}
+
+while (reader.EndOfStream == false)
+{    
+    line = reader.ReadLine();
+    Console.WriteLine(line);
+}
+
+while(!reader.EndOfStream) //this is same as line 620
+{
+
+}
+
+reader.Close(); //Close the stream else stream will be in memory
+
+//using - dispose objects automatically at the end
+using(Employee employee = new Employee())
+{
+
+}
+
+using (StreamReader reader1 = new StreamReader("mytestfile.txt"))
+{
+
+    while (reader1.EndOfStream == false)
+    {
+        line = reader1.ReadLine();
+        Console.WriteLine(line);
+    }
+} // no need for reader.Close because using will dispose the object automatically
+
+
+//async I/O
+
+using(StreamWriter writer = new StreamWriter("mytestfile.txt"))
+{
+    writer.WriteLine("hello"); //sync operation, main thread will execute this
+    await writer.WriteLineAsync("hello"); //async operation, a child thread will execute this, so main thread will not be blocked and it will continue other lines execution
+}
+
+Console.ReadLine();
+
+
+
+
+
+
 
 
 
