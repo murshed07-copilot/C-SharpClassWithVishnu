@@ -1,6 +1,8 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using ConsoleApp1;
 using Microsoft.VisualBasic;
+using System.Collections;
+using System.Net.Http.Headers;
 
 Console.WriteLine("Hello, World!");
 
@@ -495,6 +497,80 @@ var empWithManagers1 = from emp in employeeList
                            ManagerName = mgr.ManagerName
                        };
 Console.ReadLine();
+
+
+//Array
+//List
+//Dictionary - Key and Value
+//Tuple
+
+Dictionary<string, string> myDict = new Dictionary<string, string>();
+myDict.Add("key1", "Vishnu");
+myDict.Add("key2", "Sayful");
+
+string value1 = myDict["key1"];
+
+foreach (var key in myDict.Keys) //.Values also available
+{
+    string keyy = key;
+    string value2 = myDict[keyy];
+}
+
+foreach(KeyValuePair<string, string> kvp in myDict)
+{
+    string key = kvp.Key;
+    string value = kvp.Value;
+}
+
+//Linq or Lambda will search record by record
+//Dictionary will directly fetch the required employee using the key. So performance improved
+Employee employee41 = employeeList.FirstOrDefault(emp => emp.Id == "4");
+Manager manager1 = managerList.FirstOrDefault(mgr => mgr.Id == "5");
+
+Dictionary<string, Employee> employeeDictList = new Dictionary<string, Employee>();
+employeeDictList.Add("4", new Employee());
+
+employee41 = employeeDictList["4"]; //this can be done using Lambda or Linq, line 526
+
+//List<T>
+//Dictionary<TKey, TValue>
+
+//old way for line 506
+Dictionary<object, object> myDict2 = new Dictionary<object, object>();
+myDict2.Add("1", "Vishnu");
+myDict2.Add("2", "Sayful");
+myDict2.Add(1, 1);
+
+string value = myDict["1"] as string;
+string value11 = (string)myDict["1"];
+
+//int value2 = (int) myDict["1"];
+
+ArrayList arrayList = new ArrayList();
+arrayList.Add("1");
+arrayList.Add(1); 
+
+List<object> list = new List<object>();
+
+
+Employee employee42 = employeeList.FirstOrDefault(emp => emp.Id == "4");
+Manager manager2 = managerList.FirstOrDefault(mgr => mgr.Id == "5");
+
+//code resuability/refactoring, readability, reduce lines of code
+static T FindItem<T>(List<T> list, Func<T, bool> predicate) //predicate is lambda function
+{
+    return list.FirstOrDefault(predicate);
+}
+
+Employee emp1 = FindItem(employeeList, emp => emp.Id == "4"); //T is employee
+Employee emp2 = FindItem<Employee>(employeeList, emp => emp.Id == "4");
+
+Manager mgr1 = FindItem(managerList, mgr => mgr.Id == "5");
+
+
+
+
+
 
 
 
