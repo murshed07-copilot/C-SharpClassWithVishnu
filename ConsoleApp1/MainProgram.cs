@@ -2,8 +2,11 @@
 using ConsoleApp1;
 using Microsoft.VisualBasic;
 using System.Collections;
+using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices.ObjectiveC;
 
 Console.WriteLine("Hello, World!");
 
@@ -656,6 +659,106 @@ using(StreamWriter writer = new StreamWriter("mytestfile.txt"))
 }
 
 Console.ReadLine();
+
+//individual threads
+//hiring employees
+foreach(var emp in employeeList)
+{
+    Thread t = new Thread(() => emp.CalculateSalary(emp.Id));
+}
+
+//thread pool (semaphore)
+
+//It is like hiring a vendor or agency
+foreach(var emp in employeeList)
+{
+    Task.Run(() => emp.CalculateSalary(emp.Id));
+}
+
+Console.ReadLine();
+
+//Parallel execution - multiple CPU cores
+Parallel.ForEach(employeeList, emp =>
+{
+    emp.CalculateSalary(emp.Id);
+});
+
+//unsafe / race condition
+// threads will access "Logs" at the same time, causing inconsistent results
+//in real example, it can be a file, so one thread accessing the file and when other thread access the same file, error thrown
+
+List<string> logs = new List<string>();
+Parallel.ForEach(employeeList, emp =>
+{
+    emp.CalculateSalary(emp.Id);
+    logs.Add($"salary calculated for {emp.FullName}");
+});
+
+//avoid unsafe/race using lock
+object dummy = new object();
+Parallel.ForEach(employeeList, emp =>
+{
+    lock (dummy)
+    {
+        emp.CalculateSalary(emp.Id);
+        logs.Add($"salary calculated for {emp.FullName}");
+    }
+});
+
+//Concurrent Bag
+ConcurrentBag<string> logs1 = new ConcurrentBag<string>();
+Parallel.ForEach(employeeList, emp =>
+{   
+    emp.CalculateSalary(emp.Id);
+    logs1.Add($"salary calculated for {emp.FullName}");
+    
+});
+
+object employeelock = new object();
+object departmentlock = new object();
+
+void EmployeeUpdate()
+{
+    lock(employeelock)
+    {
+
+        lock (departmentlock) //T1 will wait till departmentlock is released
+        {
+
+        }
+    }
+}
+
+ void DepartmentUpdate()
+{
+    lock (departmentlock)
+    {
+        lock (employeelock) //T2 will wait till employeelock is released
+        {
+
+        }
+    }
+}
+
+Thread T1  = new Thread(EmployeeUpdate);
+Thread T2 = new Thread(DepartmentUpdate);
+
+
+void Update()
+{
+    lock (employeelock)
+    {
+        lock(departmentlock)
+        {
+
+        }
+    }
+}
+
+//Monitor
+
+
+
 
 
 
