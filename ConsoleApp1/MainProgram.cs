@@ -1,5 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using ConsoleApp1;
+using Microsoft.Data.SqlClient;
 using Microsoft.VisualBasic;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -756,6 +757,71 @@ void Update()
 }
 
 //Monitor
+
+//Denial of Service attack
+//DOS
+//DDOS
+
+//SQL Injection attack - to avoid this, use parameterized sql commands
+string name1 = Console.ReadLine();
+
+var sql = $"select * from employees where name = {name1}";
+//name1 = "OR 1 =1 ; Drop table employees"
+
+//SQLCommands
+
+sql = $"select * from employees where name = @name";
+var sqlCommand = new SqlCommand(sql);
+sqlCommand.Parameters.AddWithValue("@name", name1);
+
+Console.ReadLine();
+
+var emp = employeeList.FirstOrDefault(emp => emp.FullName == name1);
+
+
+//XSS - Cross Side Scripting
+
+//<p> {{name1}} </p>
+//name1 = "<script> alert('hack') </script>"
+
+//to avoid this - use Html Encode
+//<p> @Html.Encode(name1); </p>
+//&lt;script&gt; alert
+
+
+
+//file upload
+//file type
+//file size
+
+//Secrets
+//Web.config
+//application.json
+//azure keyvault or aws secret manager
+
+//[Authorize("Roles = Admin"]
+
+//datalength
+//form posting
+//form will be serialized and sent to the server
+//4096 bytes
+//data annotations - Stringlength, Range, Required, EmailAdress
+
+
+//log
+//sensitive data - 
+//XXXXXXX - Anonymization
+
+
+//CSRF - Cross Site Request Forgery
+
+//@Html.AntiForgeryToken
+
+
+
+
+        
+
 
 
 

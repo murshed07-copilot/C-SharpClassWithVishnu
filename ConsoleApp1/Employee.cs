@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,8 +33,15 @@ namespace ConsoleApp1
         //association - basic relationship
         public Department Department { get; set; }
 
+        [StringLength(100)]
+        [EmailAddress]
+
         public string ManagerId { get; set; }
 
+        [Range(0, 50)]
+        [Required]
+        [Phone]
+        [RegularExpression("")]
         public int Salary { get; set; }
 
         
